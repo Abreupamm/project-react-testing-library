@@ -3,9 +3,7 @@ import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
-// import { element } from 'prop-types';
 import App from '../App';
-// import Pokedex from '../pages';
 import pokemons from '../data';
 
 describe('Testando o componente Pokedex.js', () => {
