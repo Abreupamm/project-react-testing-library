@@ -3,12 +3,13 @@ import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
-import { element } from 'prop-types';
+// import { element } from 'prop-types';
 import App from '../App';
 // import Pokedex from '../pages';
 import pokemons from '../data';
 
 describe('Testando o componente Pokedex.js', () => {
+  const name = 'pokemon-name';
   beforeEach(() => {
     const history = createMemoryHistory();
     render(
@@ -30,23 +31,48 @@ describe('Testando o componente Pokedex.js', () => {
         'button', { name: 'Próximo pokémon', hidden: true },
       );
       pokemons.forEach((el, index) => {
-        if (index === pokemons.length - 1) {
-          userEvent.click(buttonElement);
-          const cardElement1 = screen.getByTestId('pokemon-name');
-          const pokemon = pokemons[0];
-          expect(cardElement1.innerHTML).toBe(pokemon.name);
-        } else {
-          const i = index + 1;
-          userEvent.click(buttonElement);
-          const cardElement2 = screen.getByTestId('pokemon-name');
-          const pokemon = pokemons[i];
-          expect(cardElement2.innerHTML).toBe(pokemon.name);
+        const cardElement = screen.getByTestId(name);
+        let i = 0;
+        if (index !== pokemons.length - 1) {
+          i = index + 1;
         }
+        userEvent.click(buttonElement);
+        const pokemon = pokemons[i];
+        expect(cardElement.innerHTML).toBe(pokemon.name);
       });
     },
   );
   test('Verifica se é monstardo um pokemon por vez', () => {
-    const pokemonElement = screen.getAllByTestId('pokemon-name');
+    const pokemonElement = screen.getAllByTestId(name);
     expect(pokemonElement.length).toBe(1);
+  });
+  test('Verifica se existem todos os botões de filtro', () => {
+    const buttonsElements = screen.getAllByTestId('pokemon-type-button');
+    buttonsElements.forEach((button) => {
+      expect(button).toBeInTheDocument();
+    });
+    pokemons.forEach((pokemon) => {
+      const elementFilter = buttonsElements.filter((el) => el.innerHTML === pokemon.type);
+      expect(elementFilter.length).toBe(1);
+    });
+    const buttonAllElement = screen.getByRole(
+      'button', { name: 'All', hidden: true },
+    );
+    expect(buttonAllElement).toBeInTheDocument();
+  });
+  test('Verifica se existe um botão para resetar o filtro', () => {
+    const buttonAllElement = screen.getByRole(
+      'button', { name: 'All', hidden: true },
+    );
+    expect(buttonAllElement).toBeInTheDocument();
+    userEvent.click(buttonAllElement);
+    const pokemonElement = screen.getByTestId(name);
+    pokemons.forEach((pokemon) => {
+      expect(pokemon.name).toBe(pokemonElement.innerHTML);
+      const buttonElement = screen.getByRole(
+        'button', { name: 'Próximo pokémon', hidden: true },
+      );
+      userEvent.click(buttonElement);
+    });
   });
 });
