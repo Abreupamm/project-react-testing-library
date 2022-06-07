@@ -45,4 +45,8 @@ describe('Testando o componente Pokedex.js', () => {
       });
     },
   );
+  test('Verifica se é monstardo um pokemon por vez', () => {
+    const pokemonElement = screen.getAllByTestId('pokemon-name');
+    expect(pokemonElement.length).toBe(1);
+  });
 });
