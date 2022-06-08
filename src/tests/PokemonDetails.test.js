@@ -14,7 +14,7 @@ describe('Testando o componete PokemonDetails.js', () => {
       </Router>,
     );
   });
-  test('Verifica se as informção estão corretas', () => {
+  test('Verifica se as informações estão corretas', () => {
     const linkElement = screen.getByRole('link', { name: 'More details' });
     userEvent.click(linkElement);
     const textDetail = screen.getByText(/Pikachu Details/i);
@@ -41,5 +41,14 @@ describe('Testando o componete PokemonDetails.js', () => {
     const textElement1 = screen.getByText(/Kanto Viridian Forest/i);
     const textElement2 = screen.getByText(/Kanto Power Plant/i);
     expect(textElement1 && textElement2).toBeInTheDocument();
+  });
+  test('Verifica se o usuário pode favoritar um pokémon', () => {
+    const inputElement = screen.getByLabelText('Pokémon favoritado?');
+    expect(inputElement.type).toBe('checkbox');
+    expect(inputElement).toBeInTheDocument();
+    userEvent.click(inputElement);
+    expect(inputElement).toBeChecked();
+    userEvent.click(inputElement);
+    expect(inputElement).not.toBeChecked();
   });
 });
